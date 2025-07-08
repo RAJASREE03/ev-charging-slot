@@ -11,9 +11,6 @@ import time
 from random import seed
 from random import randint
 from PIL import Image
-
-65
-
 import stepic
 import urllib.request
 import urllib.parse
@@ -27,7 +24,6 @@ database=&quot;electric_vehicle&quot;
 app = Flask(__name__)
 ##session key
 app.secret_key = &#39;abcdef&#39;
-
 Login
 def login():
 msg=&quot;&quot;
@@ -44,13 +40,9 @@ return redirect(url_for(&#39;userhome&#39;))
 else:
 msg = &#39;Incorrect username/password! or access not provided&#39;
 return render_template(&#39;login.html&#39;,msg=msg)
-
 User Register
 def register():
 msg=&quot;&quot;
-
-66
-
 mycursor = mydb.cursor()
 mycursor.execute(&quot;SELECT max(id)+1 FROM ev_register&quot;)
 maxid = mycursor.fetchone()[0]
@@ -77,7 +69,6 @@ print(cursor.rowcount, &quot;Registered Success&quot;)
 msg=&quot;sucess&quot;
 return redirect(url_for(&#39;login&#39;))
 return render_template(&#39;register.html&#39;,msg=msg)
-
 Charging Slot
 def slot():
 msg=&quot;&quot;
@@ -85,9 +76,6 @@ act=&quot;&quot;
 if &#39;username&#39; in session:
 uname = session[&#39;username&#39;]
 sid=request.args.get(&#39;sid&#39;)
-
-67
-
 cursor = mydb.cursor()
 cursor.execute(&quot;SELECT * FROM ev_station where id=%s&quot;,(sid, ))
 dd= cursor.fetchone()
@@ -122,9 +110,6 @@ where id=%s&quot;,(plan, rid))
 mydb.commit()
 return redirect(url_for(&#39;slot&#39;,sid=sid))
 return render_template(&#39;select.html&#39;,sid=sid,rid=rid)
-
-68
-
 Booking Slot
 def book():
 msg=&quot;&quot;
@@ -158,9 +143,6 @@ today= date.today()
 rdate= today.strftime(&quot;%d-%m-%Y&quot;)
 rn=randint(1, 10)
 cimage=&quot;c&quot;+str(rn)+&quot;.jpg&quot;
-
-69
-
 cursor = mydb.cursor()
 sql = &quot;INSERT INTO
 ev_booking(id,uname,station,carno,reserve,slot,cimage,rtime,rdate,status) VALUES (%s, %s,
@@ -180,7 +162,6 @@ cursor.execute(&quot;SELECT * FROM ev_booking b,ev_station s where b.station=s.i
 b.uname=%s&quot;,(uname, ))
 data= cursor.fetchall()
 return render_template(&#39;history.html&#39;,msg=msg, data=data, uname=uname)
-
 Charging
 def charge2():
 msg=&quot;&quot;
@@ -195,9 +176,6 @@ cmin=dd[17]
 csec=dd[18]
 print(&quot;sc=&quot;+str(csec))
 plan=dd[8]
-
-70
-
 if plan==1:
 cost=100
 elif plan==2:
@@ -221,7 +199,6 @@ cursor = mydb.cursor()
 cursor.execute(&quot;update ev_booking set charge_st=4,charge=%s where id=%s&quot;,(amt,rid))
 mydb.commit()
 return render_template(&#39;charge2.html&#39;,rid=rid, cmin=cmin, csec=csec)
-
 Payment
 def payment ():
 if &#39;username&#39; in session:
@@ -232,9 +209,6 @@ sid=request.args.get(&#39;sid&#39;)
 cursor = mydb.cursor()
 cursor.execute(&quot;SELECT * FROM ev_register where uname=%s&quot;,(uname, ))
 uu= cursor.fetchone()
-
-71
-
 card=uu[6]
 cursor.execute(&quot;SELECT * FROM ev_booking where id=%s&quot;,(rid, ))
 dd= cursor.fetchone()
@@ -268,8 +242,6 @@ cursor.execute(&quot;update ev_booking set pay_mode=%s,pay_st=1 where
 id=%s&quot;,(pay_mode,rid))
 mydb.commit()
 return redirect(url_for(&#39;slot&#39;,sid=sid))
-
-72
 return render_template(&#39;payment.html&#39;,sid=sid,rid=rid,
 uname=uname,amount=amount,card=card)
 def verify_otp():
